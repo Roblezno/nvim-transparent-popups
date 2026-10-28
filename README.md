@@ -18,13 +18,16 @@ Theme-aware floating windows for Neovim.
 
 ## Installation
 
-Local development, from this folder:
+With `vim.pack` (built into Neovim 0.12+):
 
 ```lua
-vim.cmd("colorscheme kanagawa") -- any colorscheme, loaded first
-vim.opt.runtimepath:prepend(vim.fn.expand("~/Documents/proyectos/nvim-plugins/nvim-transparent-popups"))
+vim.pack.add({ "https://github.com/Roblezno/nvim-transparent-popups" })
+
+vim.cmd("colorscheme kanagawa") -- any colorscheme, loaded before setup()
 require("transparent-popups").setup()
 ```
+
+With any other plugin manager, use the same repository URL and call `setup()` after your colorscheme.
 
 ## Configuration
 
