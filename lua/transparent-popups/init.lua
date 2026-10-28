@@ -16,4 +16,10 @@ function M.setup(opts)
   require("transparent-popups.hover").setup()
 end
 
+--- blink.cmp options (menu padding, borders) to deep-merge into require("blink.cmp").setup()
+---@return table
+function M.blink_opts()
+  return require("transparent-popups.blink").opts()
+end
+
 return M
