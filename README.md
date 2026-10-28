@@ -1,17 +1,74 @@
 # nvim-transparent-popups
 
-Theme-aware floating windows for Neovim 0.12+.
+Theme-aware floating windows for Neovim.
 
-- Borders and transparency follow the active colorscheme, for every float (LSP hover, blink.cmp, Mason, ...)
-- Works with transparent and opaque backgrounds
-- Left/right padding for the LSP hover and the blink.cmp menu
+## Features
+
+- Borders and transparency for every float (LSP hover, blink.cmp, Mason, ...) that follow the active colorscheme,
+  transparent or opaque, re-applied on every `:colorscheme`
+- Left/right padding for the LSP hover (`K`) and the blink.cmp menu
 - blink.cmp scrollbar in the same color as the borders
 
-> Work in progress.
+## Requirements
 
-## Install (local development)
+- Neovim 0.11+ (uses `'winborder'`)
+- Optional: [blink.cmp](https://github.com/saghen/blink.cmp) 1.x
+
+## Installation
+
+Local development, from this folder:
 
 ```lua
+vim.cmd("colorscheme kanagawa") -- any colorscheme, loaded first
 vim.opt.runtimepath:prepend(vim.fn.expand("~/Documents/proyectos/nvim-plugins/nvim-transparent-popups"))
 require("transparent-popups").setup()
 ```
+
+## Configuration
+
+`setup()` accepts these options, shown with their defaults:
+
+```lua
+require("transparent-popups").setup({
+  transparent = "auto",           -- "auto" (Normal has no background) | true | false
+  border = "single",              -- sets 'winborder' for every float; false leaves it untouched
+  hover = { padding = 1 },        -- spaces left and right of the LSP hover text
+  blink = { padding = { 1, 2 } }, -- blink.cmp menu padding: number or { left, right }
+})
+```
+
+The right blink padding is wider so the text keeps clear of the scrollbar, which is drawn on the border.
+
+### blink.cmp
+
+Merge the plugin's options into blink.cmp's own setup. Options you set yourself are on the right and win:
+
+```lua
+require("blink.cmp").setup(vim.tbl_deep_extend("force", require("transparent-popups").blink_opts(), {
+  -- your blink.cmp options
+}))
+```
+
+## What it changes
+
+| Target | Change |
+|--------|--------|
+| `'winborder'` | Set to `border` |
+| `NormalFloat`, `Pmenu` | Transparent mode: background removed. Opaque: theme colors kept |
+| `FloatBorder`, `FloatTitle`, `FloatFooter` | Background removed (transparent) or set to the `NormalFloat` background (opaque) |
+| `BlinkCmpMenu`, `BlinkCmpDoc`, `BlinkCmpSignatureHelp` (+ `Border`) | Linked to `NormalFloat` / `FloatBorder`, so blink.cmp looks like any other float |
+| `BlinkCmpScrollBarThumb` | Background set to the border color |
+| `vim.lsp.util.open_floating_preview` | Wrapped to pad the hover float only. Signature help and diagnostic floats are untouched |
+
+The blink.cmp selection highlight is left to the colorscheme and blink.cmp.
+
+## Health
+
+```vim
+:checkhealth transparent-popups
+```
+
+## Known limitations
+
+- Changing `transparent` at runtime with a second `setup()` call can't bring back backgrounds that were already
+  removed: run `:colorscheme <name>` afterwards
