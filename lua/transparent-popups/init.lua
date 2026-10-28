@@ -7,8 +7,13 @@ local M = {}
 --- Configure the plugin and apply it. Safe to call more than once.
 ---@param opts? transparent-popups.Opts
 function M.setup(opts)
-  require("transparent-popups.config").setup(opts)
-  -- Next: highlights (Step 3), hover (Step 4)
+  local options = require("transparent-popups.config").setup(opts)
+  -- Border for every float that follows 'winborder' (LSP hover, blink.cmp, Mason, ...)
+  if options.border then
+    vim.o.winborder = options.border
+  end
+  require("transparent-popups.highlights").setup()
+  -- Next: hover (Step 4)
 end
 
 return M
