@@ -32,7 +32,7 @@ require("transparent-popups").setup()
 require("transparent-popups").setup({
   transparent = "auto",           -- "auto" (Normal has no background) | true | false
   border = "single",              -- sets 'winborder' for every float; false leaves it untouched
-  hover = { padding = 1 },        -- spaces left and right of the LSP hover text
+  hover = { padding = 1 },        -- spaces left and right of the LSP hover text (0 to 3)
   blink = { padding = { 1, 2 } }, -- blink.cmp menu padding: number or { left, right }
 })
 ```
@@ -57,7 +57,9 @@ require("blink.cmp").setup(vim.tbl_deep_extend("force", require("transparent-pop
 | `NormalFloat`, `Pmenu` | Transparent mode: background removed. Opaque: theme colors kept |
 | `FloatBorder`, `FloatTitle`, `FloatFooter` | Background removed (transparent) or set to the `NormalFloat` background (opaque) |
 | `BlinkCmpMenu`, `BlinkCmpDoc`, `BlinkCmpSignatureHelp` (+ `Border`) | Linked to `NormalFloat` / `FloatBorder`, so blink.cmp looks like any other float |
+| `BlinkCmpKind`, `BlinkCmpLabelDetail`, `BlinkCmpLabelDescription`, `BlinkCmpLabelDeprecated`, `BlinkCmpSource` | Text colors kept, background set to the float background, so the menu is a single color |
 | `BlinkCmpScrollBarThumb` | Background set to the border color |
+| `BlinkCmpScrollBarGutter` | Background set to the float background (only shown when there is no border) |
 | `vim.lsp.util.open_floating_preview` | Wrapped to pad the hover float only. Signature help and diagnostic floats are untouched |
 
 The blink.cmp selection highlight is left to the colorscheme and blink.cmp.

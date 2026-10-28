@@ -51,7 +51,10 @@ function M.check()
   if thumb.bg == border.fg then
     vim.health.ok("blink.cmp scrollbar thumb matches the border color (" .. hex(border.fg) .. ")")
   else
-    vim.health.warn(("Scrollbar thumb %s differs from the border color %s"):format(hex(thumb.bg), hex(border.fg)), advice)
+    vim.health.warn(
+      ("Scrollbar thumb %s differs from the border color %s"):format(hex(thumb.bg), hex(border.fg)),
+      advice
+    )
   end
 
   vim.health.start("transparent-popups: border and hover")
@@ -60,12 +63,18 @@ function M.check()
   elseif vim.o.winborder == options.border then
     vim.health.ok("'winborder' is " .. vim.inspect(options.border))
   else
-    vim.health.warn(("'winborder' is %s, expected %s"):format(vim.inspect(vim.o.winborder), vim.inspect(options.border)), {
-      "Something set 'winborder' after setup()",
-    })
+    vim.health.warn(
+      ("'winborder' is %s, expected %s"):format(vim.inspect(vim.o.winborder), vim.inspect(options.border)),
+      { "Something set 'winborder' after setup()" }
+    )
   end
-  if require("transparent-popups.hover").is_wrapped() then
+  local hover = require("transparent-popups.hover").status()
+  if hover == "active" then
     vim.health.ok(("LSP hover padded by %d space(s) on each side"):format(options.hover.padding))
+  elseif hover == "replaced" then
+    vim.health.info("vim.lsp.util.open_floating_preview was replaced by another plugin after setup()", {
+      "The hover is only padded if that plugin still calls the previous function",
+    })
   else
     vim.health.warn("LSP hover padding is not installed")
   end

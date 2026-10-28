@@ -68,6 +68,24 @@ function M.apply()
     vim.api.nvim_set_hl(0, "BlinkCmp" .. kind, { link = "NormalFloat" })
     vim.api.nvim_set_hl(0, "BlinkCmp" .. kind .. "Border", { link = "FloatBorder" })
   end
+  -- blink.cmp's text groups default to the Pmenu family, which carries the Pmenu background. Give them the
+  -- float background so the menu is a single color. blink.cmp defines its defaults lazily, so a group that
+  -- doesn't exist yet starts from blink's default source and keeps its text color
+  local blink_text = {
+    BlinkCmpKind = "PmenuKind",
+    BlinkCmpLabelDetail = "PmenuExtra",
+    BlinkCmpLabelDescription = "PmenuExtra",
+    BlinkCmpLabelDeprecated = "PmenuExtra",
+    BlinkCmpSource = "PmenuExtra",
+  }
+  for name, default_source in pairs(blink_text) do
+    local hl = get(name)
+    if vim.tbl_isempty(hl) then
+      hl = get(default_source)
+    end
+    hl.bg, hl.ctermbg = bg, nil
+    vim.api.nvim_set_hl(0, name, hl)
+  end
   -- The thumb is drawn on the border column with empty cells, so its bg is the visible color
   vim.api.nvim_set_hl(0, "BlinkCmpScrollBarThumb", { bg = border_fg })
   vim.api.nvim_set_hl(0, "BlinkCmpScrollBarGutter", { bg = bg })

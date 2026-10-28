@@ -13,6 +13,10 @@ function M.opts()
   local options = config.options
   -- Without a border option blink.cmp falls back to 'winborder' by itself
   local border = options.border or nil
+  -- 'winborder' takes a custom border as "a,b,c,...", while window configs need a list of 8 characters
+  if border and border:find(",") then
+    border = vim.split(border, ",")
+  end
   return {
     completion = {
       menu = {

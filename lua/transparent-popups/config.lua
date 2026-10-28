@@ -6,7 +6,7 @@ local M = {}
 ---@class transparent-popups.Config
 ---@field transparent "auto"|boolean Transparent floats; "auto" follows the Normal background
 ---@field border string|false Border for every float (sets 'winborder'); false leaves it untouched
----@field hover { padding: integer } Spaces added left and right of the LSP hover text
+---@field hover { padding: integer } Spaces added left and right of the LSP hover text (0 to 3)
 ---@field blink { padding: integer|integer[] } blink.cmp menu padding, or { left, right }
 
 -- Same fields, all optional: what the user passes to setup()
@@ -41,10 +41,25 @@ local function validate(cfg)
     return v == "auto" or type(v) == "boolean"
   end, '"auto", true or false')
   vim.validate("border", cfg.border, function(v)
-    return type(v) == "string" or v == false
-  end, "a 'winborder' value or false")
+    if v == false then
+      return true
+    end
+    if type(v) ~= "string" then
+      return false
+    end
+    -- Let Neovim judge the value: try it on 'winborder', then restore the current one
+    local current = vim.o.winborder
+    local ok = pcall(function()
+      vim.o.winborder = v
+    end)
+    vim.o.winborder = current
+    return ok
+  end, "a valid 'winborder' value or false")
   vim.validate("hover", cfg.hover, "table")
-  vim.validate("hover.padding", cfg.hover.padding, is_padding, "integer >= 0")
+  -- 4+ leading spaces turn every hover line into a markdown indented code block
+  vim.validate("hover.padding", cfg.hover.padding, function(v)
+    return is_padding(v) and v <= 3
+  end, "integer from 0 to 3")
   vim.validate("blink", cfg.blink, "table")
   vim.validate("blink.padding", cfg.blink.padding, function(v)
     return is_padding(v) or (type(v) == "table" and #v == 2 and is_padding(v[1]) and is_padding(v[2]))
