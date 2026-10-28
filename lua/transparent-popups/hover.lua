@@ -34,4 +34,10 @@ function M.setup()
   end
 end
 
+--- Whether the hover wrapper is installed (used by :checkhealth)
+---@return boolean
+function M.is_wrapped()
+  return original ~= nil
+end
+
 return M
