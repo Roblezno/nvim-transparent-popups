@@ -13,7 +13,7 @@ function M.setup(opts)
     vim.o.winborder = options.border
   end
   require("transparent-popups.highlights").setup()
-  -- Next: hover (Step 4)
+  require("transparent-popups.hover").setup()
 end
 
 return M
