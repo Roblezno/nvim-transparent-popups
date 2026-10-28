@@ -5,9 +5,10 @@
 local M = {}
 
 --- Configure the plugin and apply it. Safe to call more than once.
----@param opts? table
+---@param opts? transparent-popups.Opts
 function M.setup(opts)
-  -- Filled in step by step: config (Step 2), highlights (Step 3), hover (Step 4)
+  require("transparent-popups.config").setup(opts)
+  -- Next: highlights (Step 3), hover (Step 4)
 end
 
 return M
